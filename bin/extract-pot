@@ -24,6 +24,8 @@ var argv = require('optimist').demand(['l'])
    .alias('f', 'template-file-ext')
    .default('f', 'ejs')
    .describe('template-file-ext', 'File extension of templates. Defaults to ejs as in home.ejs, value can be valid file ext.')
+   .alias('k', 'keyword')
+   .describe('keyword', 'Keyword to look for renamed format function format_fn_name')
    .check(function (argv) {
     // We have atleast one directory of source code to process
     return argv._.length >= 1;
@@ -68,6 +70,15 @@ if (argv.exclude) {
     templateCmd += ' | grep -v ' + exclude;
   });
 }
+
+if (argv.keyword) {
+  var keyword = argv.keyword;
+  if ('string' === typeof argv.keyword){
+    jsCmd = jsCmd.replace('--keyword=_', '--keyword=_ --keyword=' + keyword);
+    templateCmd = templateCmd.replace('--keyword=_', '--keyword=_ --keyword=' + keyword);
+  }
+}
+
 
 templateExt = argv['template-file-ext'];
 // Close out `find ...` backtick
